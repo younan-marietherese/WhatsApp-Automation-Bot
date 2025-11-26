@@ -70,7 +70,7 @@ Body (JSON):
 ---
 
 ## index.js (Insert your full code)
-```json
+
 const { Client, LocalAuth } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
 const express = require("express");
@@ -119,7 +119,7 @@ client.on("message", async (msg) => {
     const text = msg.body.trim().toLowerCase();
 
     if (["hi", "hello", "hey"].includes(text)) {
-        await msg.reply("Hello! 👋 I'm your automated bot.");
+        await msg.reply("Hello! I'm your automated bot.");
         console.log("Bot replied: Hello!");
     }
 });
@@ -155,7 +155,7 @@ app.listen(3000, () => {
     console.log("API Server running on http://localhost:3000");
 });
 
-```
+
 ---
 
 
