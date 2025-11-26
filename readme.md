@@ -1,43 +1,49 @@
-# WhatsApp Web Automation Bot (Node.js + whatsapp-web.js + LocalAuth)
+# WhatsApp Web Automation Bot  
+*(Node.js + WhatsApp-Web.js + LocalAuth + Express API)*
+
+A fully functional WhatsApp automation bot that uses **WhatsApp Web** to receive and send messages programmatically.  
+The bot also exposes a REST API, making it possible to trigger WhatsApp messages from **Postman, Thunder Client, n8n, or any external system**.
+
+---
 
 ## Project Overview
-This project implements a fully functional automation bot using **WhatsApp Web**, built with:
 
-- **Node.js**
-- **whatsapp-web.js**
-- **LocalAuth (session persistence)**
-- **Express.js API endpoint**
-- **Thunder Client / Postman testing**
+This project implements:
 
-The bot can:
-- Receive incoming WhatsApp messages
-- Auto‑reply to specific triggers (e.g., “hi”)
-- Send WhatsApp messages using a REST API from any system
-- Integrate with automation platforms like **n8n**
+- **WhatsApp Web automation** using `whatsapp-web.js`
+- **LocalAuth** for persistent login (no QR scan after first time)
+- **Express.js REST API**  
+- **Auto-reply system**
+- **Integration-ready bot** for n8n and other automation platforms
 
 ---
 
 ## Features
-- Auto‑reply logic
-- REST API for sending WhatsApp messages
-- Persistent WhatsApp login (no QR every run)
-- Perfect for automation workflows
+
+- Receive WhatsApp messages in real-time  
+- Auto-reply to specific triggers (e.g., "hi", "hello", "hey")  
+- Secure REST API to send WhatsApp messages  
+- Persistent login  
+- Perfect base for chatbots, schedulers, automation workflows  
 
 ---
 
 ## Project Structure
+
 ```
 whatsapp-bot/
 │
-├── index.js
-├── package.json
-└── .wwebjs_auth/   # auto‑generated LocalAuth session folder
+├── index.js           # Main bot + API server
+├── package.json       # Dependencies
+├── .gitignore         # Prevents private auth data from being committed
+└── .wwebjs_auth/      # Auto-generated — DO NOT upload to GitHub
 ```
 
 ---
 
-## Installation
+## 🛠 Installation
 
+### Install dependencies  
 ```bash
 npm init -y
 npm install whatsapp-web.js qrcode-terminal express
@@ -45,20 +51,22 @@ npm install whatsapp-web.js qrcode-terminal express
 
 ---
 
-## Running the bot
+## Running the Bot
+
 ```bash
 node index.js
 ```
 
-First time → scans QR  
-Next runs → auto‑login
+- First run → QR code appears (scan with your phone)
+- Next runs → Auto-login using LocalAuth
 
 ---
 
 ## Testing the API
 
-**POST** `http://localhost:3000/send-message`  
-Body (JSON):
+### **POST** `http://localhost:3000/send-message`
+
+#### **Body (JSON):**
 
 ```json
 {
@@ -67,10 +75,19 @@ Body (JSON):
 }
 ```
 
+#### Expected Response:
+```json
+{
+  "status": "Message sent",
+  "to": "961XXXXXXXX"
+}
+```
+
 ---
 
-## index.js (Insert your full code)
+## Full `index.js` Code
 
+```javascript
 const { Client, LocalAuth } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
 const express = require("express");
@@ -102,60 +119,4 @@ const client = new Client({
 
 // QR EVENT
 client.on("qr", (qr) => {
-    console.log("QR RECEIVED");
-    qrcode.generate(qr, { small: true });
-});
-
-// READY EVENT
-client.on("ready", () => {
-    console.log("WhatsApp Bot is ready!");
-    WHATSAPP_CLIENT = client;
-});
-
-// MESSAGE LISTENER
-client.on("message", async (msg) => {
-    console.log("Message received:", msg.body);
-
-    const text = msg.body.trim().toLowerCase();
-
-    if (["hi", "hello", "hey"].includes(text)) {
-        await msg.reply("Hello! I'm your automated bot.");
-        console.log("Bot replied: Hello!");
-    }
-});
-
-client.initialize();
-
-// -------------------------
-// API ENDPOINTS
-// -------------------------
-
-app.get("/", (req, res) => {
-    res.send({ status: "WhatsApp API is running" });
-});
-
-app.post("/send-message", async (req, res) => {
-    const { number, message } = req.body;
-
-    if (!WHATSAPP_CLIENT) {
-        return res.status(400).send({ error: "WhatsApp client not ready" });
-    }
-
-    try {
-        await WHATSAPP_CLIENT.sendMessage(`${number}@c.us`, message);
-        res.send({ status: "Message sent", to: number });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send({ error: error.toString() });
-    }
-});
-
-// START SERVER
-app.listen(3000, () => {
-    console.log("API Server running on http://localhost:3000");
-});
-
-
----
-
-
+    console.log("QR
