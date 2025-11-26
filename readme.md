@@ -41,7 +41,7 @@ whatsapp-bot/
 
 ---
 
-## 🛠 Installation
+## Installation
 
 ### Install dependencies  
 ```bash
